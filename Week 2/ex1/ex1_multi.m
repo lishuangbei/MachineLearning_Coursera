@@ -104,9 +104,13 @@ fprintf('\n');
 % ====================== YOUR CODE HERE ======================
 % Recall that the first column of X is all-ones. Thus, it does
 % not need to be normalized.
+<<<<<<< HEAD
 newhouse = [1650 3];
 newhouse_norm = (newhouse - mu) ./ sigma;
 price = [1 newhouse_norm] * theta; % You should change this
+=======
+price = [1 1650 3] * theta; % You should change this
+>>>>>>> master
 
 
 % ============================================================
