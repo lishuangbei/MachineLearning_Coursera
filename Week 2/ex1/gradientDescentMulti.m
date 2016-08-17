@@ -22,7 +22,7 @@ for iter = 1:num_iters
 
 
     % ============================================================
-
+  theta = theta1;
     % Save the cost J in every iteration    
     J_history(iter) = computeCostMulti(X, y, theta);
 
