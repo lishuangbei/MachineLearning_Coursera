@@ -68,11 +68,14 @@ J = -(1/m)*(y_new(:)'*log(h(:))+(1-y_new(:))'*log(1-h(:))) ...
 
 for t = 1:m
   xt = X(t,:)';
-  z1t = Theta1*[1;xt];
-  a1t = sigmoid(z1t);
-  z2t = Theta2*[1;a1t];
+  z2t = Theta1*[1;xt];
   a2t = sigmoid(z2t);
-  
+  z3t = Theta2*[1;a2t];
+  a3t = sigmoid(z3t); % step 1 end, calculate a3t
+  yt = y(t,:)';
+  delta3t = a3t - yt;
+  delta2t = (Theta2' * delta3t)(2:end) .* (sigmoid(z2t).*(1-sigmoid(z2t)));
+      
 
 end
 % -------------------------------------------------------------
