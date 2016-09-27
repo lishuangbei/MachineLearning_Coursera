@@ -63,32 +63,33 @@ Theta2_grad = zeros(size(Theta2));
 %
 h = sigmoid([ones(m,1) sigmoid([ones(m,1) X]*Theta1')]*Theta2');
 y_new = [y==1:num_labels];
-J = -(1/m)*(y_new(:)'*log(h(:))+(1-y_new(:))'*log(1-h(:)))
-    %+ lambda/(2*m)*(Theta1(:)'*Theta1(:) + Theta2(:)'*Theta2(:) - Theta1(:,1)'*Theta1(:,1)-Theta2(:,1)'*Theta2(:,1))
+J = -(1/m)*(y_new(:)'*log(h(:))+(1-y_new(:))'*log(1-h(:)))...
+    + lambda/(2*m)*(Theta1(:)'*Theta1(:) + Theta2(:)'*Theta2(:) - Theta1(:,1)'*Theta1(:,1)-Theta2(:,1)'*Theta2(:,1));
 
-for t = 1:m
-  xt = X(t,:)'; % 400*1
-  z2t = Theta1*[1;xt]; % 25*1
-  a2t = sigmoid(z2t); % 25*1
-  z3t = Theta2*[1;a2t]; % 10*1
-  a3t = sigmoid(z3t); % 10*1, step 1 end, calculate a3t
-  yt = y(t,:)'; % 10*1
-  delta3t = a3t - yt; % 10*1
-  delta2t = (Theta2' * delta3t)(2:end) .* (sigmoidGradient(z2t)); % (25*1) 
-  Theta1_grad = (Theta1_grad + delta2t * [1;xt]'); % 25*401
-  Theta2_grad = (Theta2_grad + delta3t * [1;a2t]'); % 10*26
+%for t = 1:m
+%  xt = X(t,:)'; % 400*1
+%  z2t = Theta1*[1;xt]; % 25*1
+%  a2t = sigmoid(z2t); % 25*1
+%  z3t = Theta2*[1;a2t]; % 10*1
+%  a3t = sigmoid(z3t); % 10*1, step 1 end, calculate a3t
+%  yt = y(t,:)'; % 10*1
+%  delta3t = a3t - yt; % 10*1
+%  delta2t = (Theta2' * delta3t)(2:end) .* (sigmoidGradient(z2t)); % (25*1) 
+%  Theta1_grad = (Theta1_grad + delta2t * [1;xt]'); % 25*401
+%  Theta2_grad = (Theta2_grad + delta3t * [1;a2t]'); % 10*26
+%end
+%
+%Theta1_grad = 1/m * Theta1_grad;
+%Theta2_grad = 1/m * Theta2_grad;
+z2 = [ones(m,1) X]*Theta1'; %5000*25
+a2 = sigmoid(z2); %5000*25
+z3 = [ones(m,1) a2] * Theta2'; %5000*10
+a3 = sigmoid(z3); %5000*10
+d3 = a3 - y_new; %5000*10
+d2 = (d3*Theta2(:,2:end)) .* sigmoidGradient(z2); %5000*25
 
-end
-Theta1_grad = 1/m * Theta1_grad;
-Theta2_grad = 1/m * Theta2_grad;
-%z2 = [ones(m,1) X]*Theta1'; %5000*25
-%a2 = sigmoid(z2); %5000*25
-%z3 = [ones(m,1) a2] * Theta2'; %5000*10
-%a3 = sigmoid(z3); %5000*10
-%d3 = a3 - y; %5000*10
-%d2 = (d3*Theta2(:,2:end)) .* sigmoidGradient(z2); %5000*25
-%Theta1_grad = 1/m*d2' * [ones(m,1) X]; %25*401
-%Theta2_grad = 1/m*d3' * [ones(m,1) a2]; %10*26
+Theta1_grad = 1/m*d2' * [ones(m,1) X] + lambda/m * [zeros(size(Theta1),1) Theta1(:,2:end)]; %25*401
+Theta2_grad = 1/m*d3' * [ones(m,1) a2] + lambda/m * [zeros(size(Theta2),1) Theta2(:,2:end)]; %10*26
 
 % -------------------------------------------------------------
 
